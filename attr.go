@@ -48,7 +48,7 @@ func DecodeOp(b []byte) (Op, error) {
 		if err != nil {
 			return op, err
 		}
-		switch hdr.Type {
+		switch hdr.MaskedType() {
 		case CTRL_ATTR_OP_ID:
 			op.ID = native.Uint32(b[n:])
 		case CTRL_ATTR_OP_FLAGS:
@@ -88,7 +88,7 @@ func DecodeMulticastGroup(b []byte) (MulticastGroup, error) {
 		if err != nil {
 			return g, err
 		}
-		switch hdr.Type {
+		switch hdr.MaskedType() {
 		case CTRL_ATTR_MCAST_GRP_NAME:
 			g.Name, _, _ = nl.DecodeAttrString(b[n:])
 		case CTRL_ATTR_MCAST_GRP_ID:
@@ -133,7 +133,7 @@ func DecodeFamily(b []byte) (*Family, error) {
 		if err != nil {
 			return nil, err
 		}
-		switch hdr.Type {
+		switch hdr.MaskedType() {
 		case CTRL_ATTR_FAMILY_NAME:
 			f.Name, _, _ = nl.DecodeAttrString(b[n:])
 		case CTRL_ATTR_FAMILY_ID:
