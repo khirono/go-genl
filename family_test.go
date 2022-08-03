@@ -37,6 +37,28 @@ func TestGetFamily(t *testing.T) {
 	log.Printf("family: %s\n", j)
 }
 
+func TestGetFamily_NotFound(t *testing.T) {
+	conn, err := nl.Open(syscall.NETLINK_GENERIC)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer conn.Close()
+
+	mux, err := nl.NewMux()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer mux.Close()
+	go mux.Serve()
+
+	c := nl.NewClient(conn, mux)
+
+	_, err = GetFamily(c, "notfoundmodule")
+	if err != syscall.ENOENT {
+		t.Errorf("wantErr %v; but got nil", syscall.ENOENT)
+	}
+}
+
 func TestGetFamilyAll(t *testing.T) {
 	conn, err := nl.Open(syscall.NETLINK_GENERIC)
 	if err != nil {
